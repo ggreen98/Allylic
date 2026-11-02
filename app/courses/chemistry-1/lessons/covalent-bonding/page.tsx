@@ -3,6 +3,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { MobileNav } from "@/components/ui/MobileNav";
 import { Term } from "@/components/ui/Term";
 import { CovalentBondVisualizer } from "@/components/lessons/CovalentBondVisualizer";
+import { H2SharingDemo } from "@/components/lessons/H2SharingDemo";
 import { LewisStructureNotation } from "@/components/lessons/LewisStructureNotation";
 import { PolarityExplorer } from "@/components/lessons/PolarityExplorer";
 import { ESPMapVisualizer } from "@/components/lessons/ESPMapVisualizer";
@@ -126,15 +127,20 @@ export default function CovalentBondingLesson() {
             </div>
           </div>
 
-          {/* Visualizer */}
+          <p className="text-base leading-relaxed mb-6" style={{ color: "var(--oc-text-muted)" }}>
+            The simplest covalent bond in chemistry holds together dihydrogen (H₂), the form hydrogen
+            gas takes. Two hydrogen atoms, one <Term id="bond-pair">shared pair</Term>. Watch it form.
+          </p>
+
+          {/* H₂ intro demo */}
           <div
             className="p-6 mb-4"
             style={{ border: "1px solid var(--oc-green-border-dim)", background: "var(--oc-green-badge)", borderRadius: "4px" }}
           >
             <p className="font-heading text-xs mb-5" style={{ color: "var(--oc-green-dim)", letterSpacing: "0.12em", fontSize: "0.65rem" }}>
-              WATCH ELECTRONS SHARE
+              THE SIMPLEST BOND
             </p>
-            <CovalentBondVisualizer />
+            <H2SharingDemo />
           </div>
         </div>
 
@@ -151,35 +157,53 @@ export default function CovalentBondingLesson() {
             for both atoms. When that happens, atoms share two or even three pairs — forming double or
             triple bonds. More shared pairs means a stronger, shorter bond.
           </p>
+          <p className="text-base leading-relaxed mb-4" style={{ color: "var(--oc-text-muted)" }}>
+            But the extra pairs don&apos;t all sit in the same place. The first pair two atoms share is a{" "}
+            <Term id="sigma-bond">sigma (σ) bond</Term>: its electrons sit directly between the two
+            nuclei, along the line connecting them. There&apos;s only room for one pair there, so every
+            pair after that is a <Term id="pi-bond">pi (π) bond</Term>, with its electrons in two lobes,
+            one above that line and one below it.
+          </p>
+          <p className="text-base leading-relaxed mb-6" style={{ color: "var(--oc-text-muted)" }}>
+            That means every covalent bond has exactly one σ bond, and double and triple bonds add π bonds
+            on top. Because π electrons sit off to the sides, farther from the nuclei, they&apos;re held
+            less tightly. That makes them the most exposed, electron-rich part of a multiple bond.
+          </p>
 
           <div className="flex flex-col gap-3 mb-6">
             {[
               {
                 label: "SINGLE BOND  (—)",
                 example: "H₂, HCl, H₂O",
+                makeup: "1σ",
                 color: "#34d399",
                 text: "One shared pair of electrons. The weakest and longest of the three. Each atom contributes 1 electron to the shared pair.",
               },
               {
                 label: "DOUBLE BOND  (═)",
                 example: "O₂, CO₂",
+                makeup: "1σ + 1π",
                 color: "#60a5fa",
                 text: "Two shared pairs (4 electrons total). Stronger and shorter than a single bond. Oxygen gas (O₂) is a classic example — each O contributes 2 electrons.",
               },
               {
                 label: "TRIPLE BOND  (≡)",
                 example: "N₂, CO",
+                makeup: "1σ + 2π",
                 color: "#f5a623",
                 text: "Three shared pairs (6 electrons total). The strongest covalent bond — very short and very hard to break. Nitrogen gas (N₂) holds its triple bond so tightly that N₂ is extremely unreactive.",
               },
-            ].map(({ label, example, color, text }) => (
+            ].map(({ label, example, makeup, color, text }) => (
               <div key={label} className="p-4" style={{ border: `1px solid ${color}33`, background: `${color}08`, borderRadius: "4px" }}>
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
                   <p className="font-heading text-xs" style={{ color, letterSpacing: "0.1em", fontSize: "0.7rem" }}>
                     {label}
                   </p>
                   <span className="font-heading text-xs" style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.6rem", letterSpacing: "0.08em" }}>
                     {example}
+                  </span>
+                  <span className="font-heading text-xs ml-auto px-2 py-0.5" style={{ color, border: `1px solid ${color}44`, borderRadius: "4px", fontSize: "0.65rem", letterSpacing: "0.08em" }}>
+                    {makeup}
                   </span>
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--oc-text-muted)" }}>
@@ -265,12 +289,44 @@ export default function CovalentBondingLesson() {
             For reference, H–Cl has μ = 1.08 D and H–F has μ = 1.86 D — fluorine&apos;s higher
             electronegativity creates a larger dipole even though the bond lengths are similar.
           </p>
+          <p className="text-base leading-relaxed mb-4" style={{ color: "var(--oc-text-muted)" }}>
+            To compare two atoms, subtract the smaller electronegativity from the larger. The result is
+            the <Term id="electronegativity-difference">electronegativity difference</Term>, written{" "}
+            <strong style={{ color: "var(--oc-text)" }}>ΔEN</strong> (Δ, the Greek letter delta, means
+            &ldquo;difference in&rdquo;). For O₂, ΔEN = 3.44 − 3.44 ={" "}
+            <strong style={{ color: "var(--oc-text)" }}>0</strong>: identical atoms, so the bond is
+            nonpolar. For the O–H bonds in water, ΔEN = 3.44 − 2.20 ={" "}
+            <strong style={{ color: "var(--oc-text)" }}>1.24</strong>: oxygen pulls harder, so the bond
+            is polar. As a rule of thumb, ΔEN below about 0.5 is nonpolar, 0.5 to 1.7 is polar covalent,
+            and above 1.7 the electrons are usually transferred outright, forming an ionic bond.
+          </p>
           <p className="text-base leading-relaxed mb-6" style={{ color: "var(--oc-text-muted)" }}>
             In a polar bond, the more electronegative atom picks up a partial negative charge (written{" "}
             <strong style={{ color: "var(--oc-text)" }}>δ⁻</strong>, &ldquo;delta minus&rdquo;) and the
             other atom gets a partial positive charge (<strong style={{ color: "var(--oc-text)" }}>δ⁺</strong>).
             These aren&apos;t full charges like Na⁺ or Cl⁻ — they&apos;re fractions of a charge, a subtle
             imbalance in where the electrons spend their time.
+          </p>
+          <p className="text-base leading-relaxed mb-6" style={{ color: "var(--oc-text-muted)" }}>
+            See it in 3D. Start with H₂ and O₂: identical atoms, ΔEN = 0, so the electron density sits
+            evenly between them. Then switch to H₂O and watch oxygen pull the shared electrons toward
+            itself. Each molecule&apos;s Lewis structure is one click further.
+          </p>
+
+          {/* Visualizer */}
+          <div
+            className="p-6 mb-6"
+            style={{ border: "1px solid var(--oc-green-border-dim)", background: "var(--oc-green-badge)", borderRadius: "4px" }}
+          >
+            <p className="font-heading text-xs mb-5" style={{ color: "var(--oc-green-dim)", letterSpacing: "0.12em", fontSize: "0.65rem" }}>
+              WATCH ELECTRONS SHARE
+            </p>
+            <CovalentBondVisualizer />
+          </div>
+
+          <p className="text-base leading-relaxed mb-6" style={{ color: "var(--oc-text-muted)" }}>
+            Those are just three points. The explorer below lays out the full range of ΔEN, from perfectly
+            even sharing all the way to ionic transfer.
           </p>
 
           {/* Polarity Explorer */}
@@ -307,7 +363,7 @@ export default function CovalentBondingLesson() {
             <div className="flex-1 p-4" style={{ border: "1px solid rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.05)", borderRadius: "4px" }}>
               <p className="font-heading text-xs mb-2" style={{ color: "#ef4444", fontSize: "0.7rem", letterSpacing: "0.1em" }}>RED — NEGATIVE</p>
               <p className="text-sm leading-relaxed" style={{ color: "var(--oc-text-muted)" }}>
-                High electron density. Lone pairs and π bonds concentrate negative charge here — the atom is electron-rich and can attract positive charges.
+                High electron density. <Term id="lone-pair">Lone pairs</Term> and <Term id="pi-bond">π bonds</Term> concentrate negative charge here — the atom is electron-rich and can attract positive charges.
               </p>
             </div>
             <div className="flex-1 p-4" style={{ border: "1px solid rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.05)", borderRadius: "4px" }}>
@@ -431,11 +487,11 @@ export default function CovalentBondingLesson() {
             ← PREV: IONIC BONDING
           </Link>
           <Link
-            href="/courses/chemistry-1"
+            href="/courses/chemistry-1/lessons/metallic-bonding"
             className="font-heading text-xs px-5 py-3 transition-all duration-200 text-center flex-1"
             style={{ border: "1px solid var(--oc-green-subtle)", color: "var(--oc-green)", letterSpacing: "0.12em" }}
           >
-            BACK TO CHEMISTRY I →
+            NEXT: METALLIC BONDING →
           </Link>
         </div>
 

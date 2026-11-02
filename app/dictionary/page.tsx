@@ -202,6 +202,14 @@ export const TERMS = [
     related: ["electron", "atomic-number", "effective-nuclear-charge", "electron-shielding", "valence-electron"],
   },
   {
+    id: "electronegativity-difference",
+    term: "Electronegativity Difference (ΔEN)",
+    category: "Chemical Bonding",
+    definition:
+      "The difference between the electronegativities of two bonded atoms, found by subtracting the smaller value from the larger. The Greek letter Δ (delta) means \"change in\" or \"difference in,\" and EN stands for electronegativity. ΔEN predicts how evenly a bond's electrons are shared: below about 0.5 the bond is nonpolar covalent, from about 0.5 to 1.7 it is polar covalent, and above about 1.7 it is usually ionic. Two atoms of the same element always have ΔEN = 0 — for example, O₂ (3.44 − 3.44 = 0). For an O–H bond, ΔEN = 3.44 − 2.20 = 1.24, a polar covalent bond.",
+    related: ["electronegativity", "polarity", "nonpolar-covalent-bond", "polar-covalent-bond", "ionic-bond"],
+  },
+  {
     id: "effective-nuclear-charge",
     term: "Effective Nuclear Charge (Zeff)",
     category: "Periodic Trends",
@@ -306,6 +314,54 @@ export const TERMS = [
     related: ["covalent-bond", "lone-pair", "octet-rule"],
   },
   {
+    id: "sigma-bond",
+    term: "Sigma (σ) Bond",
+    category: "Chemical Bonding",
+    definition:
+      "The first bond pair shared between two atoms. Its electron density sits directly between the two nuclei, along the line that connects them (the bond axis) — the electrons meet head-on. Every covalent bond contains exactly one sigma bond: a single bond is one σ bond, and double and triple bonds are each built on one σ bond plus one or two pi (π) bonds.",
+    related: ["pi-bond", "bond-pair", "covalent-bond"],
+  },
+  {
+    id: "pi-bond",
+    term: "Pi (π) Bond",
+    category: "Chemical Bonding",
+    definition:
+      "Any additional bond pair shared between two atoms that are already joined by a sigma (σ) bond. Instead of sitting on the bond axis, a pi bond's electron density forms two lobes, one above and one below the axis — the electrons overlap side by side. A double bond is 1σ + 1π (as in O₂), and a triple bond is 1σ + 2π (as in N₂). Pi electrons are farther from the nuclei and held less tightly than sigma electrons, so they are more exposed and more reactive.",
+    related: ["sigma-bond", "bond-pair", "covalent-bond"],
+  },
+  {
+    id: "p-orbital",
+    term: "p Orbital",
+    category: "Structure",
+    definition:
+      "A dumbbell-shaped orbital with two lobes on opposite sides of the nucleus and no electron density at the nucleus itself. Each p subshell contains three p orbitals at right angles to one another (along x, y, and z), and each orbital holds up to 2 electrons. When parallel p orbitals on neighboring atoms overlap side by side, they form a pi (π) bond.",
+    related: ["pi-bond", "sigma-bond", "orbital-shell"],
+  },
+  {
+    id: "bond-rotation",
+    term: "Bond Rotation",
+    category: "Chemical Bonding",
+    definition:
+      "Twisting one part of a molecule relative to another around the axis of a bond. Single bonds allow free rotation because the sigma (σ) bond's electron density is symmetric around the axis, so twisting doesn't weaken the overlap; ethane's two ends spin billions of times per second at room temperature. Double and triple bonds are locked: twisting would misalign the p orbitals of the pi (π) bond and break it, which costs far more energy than is available at room temperature.",
+    related: ["sigma-bond", "pi-bond", "cis-trans-isomers"],
+  },
+  {
+    id: "cis-trans-isomers",
+    term: "Cis–Trans Isomers",
+    category: "Chemical Bonding",
+    definition:
+      "Two compounds with the same formula and the same bonds that differ only in which side of a double bond their groups sit on. In the cis isomer the matching groups are on the same side; in the trans isomer they are on opposite sides. Because a double bond can't rotate, one cannot turn into the other, so they are genuinely different compounds with different properties. cis-1,2-Dichloroethene, for example, is polar and boils at 60 °C, while trans-1,2-dichloroethene is nonpolar and boils at 48 °C.",
+    related: ["bond-rotation", "pi-bond", "polarity"],
+  },
+  {
+    id: "bond-energy",
+    term: "Bond Energy",
+    category: "Chemical Bonding",
+    definition:
+      "The energy needed to break one mole of a particular bond in the gas phase, usually given in kJ/mol. Larger bond energies mean stronger bonds. Bond energy rises with the number of shared pairs (C–C 347, C=C 614, C≡C 839 kJ/mol), but not proportionally, because each added pi (π) bond is weaker than the sigma (σ) bond beneath it.",
+    related: ["sigma-bond", "pi-bond", "covalent-bond"],
+  },
+  {
     id: "lone-pair",
     term: "Lone Pair",
     category: "Chemical Bonding",
@@ -328,6 +384,86 @@ export const TERMS = [
     definition:
       "A molecule made of exactly two atoms, which may be the same element or different elements. The seven diatomic elements — hydrogen (H₂), nitrogen (N₂), oxygen (O₂), fluorine (F₂), chlorine (Cl₂), bromine (Br₂), and iodine (I₂) — exist naturally as diatomic molecules rather than single atoms. Diatomic molecules of the same element (homonuclear) always form nonpolar covalent bonds. Heteronuclear diatomics like HCl or CO form polar covalent bonds.",
     related: ["covalent-bond", "nonpolar-covalent-bond", "polar-covalent-bond", "molecular-compound"],
+  },
+  {
+    id: "metallic-bond",
+    term: "Metallic Bond",
+    category: "Chemical Bonding",
+    definition:
+      "The attraction between positive metal ions and the sea of delocalized electrons that surrounds them. In a metal, each atom releases its valence electrons into a pool shared by the entire solid rather than by one or two neighboring atoms. Because the electrons aren't tied to specific atoms, metallic bonds have no fixed direction, which is why metals conduct electricity, bend instead of shattering, and are shiny. Metallic bonds form between metal atoms, such as in sodium, copper, and iron.",
+    related: ["electron-sea", "delocalized-electron", "cation", "ionic-bond", "covalent-bond"],
+  },
+  {
+    id: "electron-sea",
+    term: "Electron Sea Model",
+    category: "Chemical Bonding",
+    definition:
+      "A model of metallic bonding that pictures a metal as a regular arrangement of positive metal ions surrounded by a \"sea\" of valence electrons free to move throughout the whole solid. It explains why metals conduct electricity and heat and why they can be hammered into shape. It is a simplified picture; a more advanced model called band theory describes the same electrons using energy levels that spread across the whole metal.",
+    related: ["metallic-bond", "delocalized-electron", "valence-electron"],
+  },
+  {
+    id: "delocalized-electron",
+    term: "Delocalized Electron",
+    category: "Chemical Bonding",
+    definition:
+      "An electron that is not tied to a single atom or a single bond but is spread across many atoms. In metals, the valence electrons are delocalized across the entire solid, forming the electron sea. Compare with a bond pair in a covalent bond, which is localized between two specific atoms.",
+    related: ["electron-sea", "metallic-bond", "bond-pair", "valence-electron"],
+  },
+  {
+    id: "malleability",
+    term: "Malleability",
+    category: "Property",
+    definition:
+      "The ability of a solid to be hammered or pressed into thin sheets without breaking. Metals are malleable because layers of metal ions can slide past one another while the electron sea keeps holding them together. Gold is the most malleable metal; it can be beaten into sheets less than a millionth of a meter thick. Ionic solids are brittle instead: shifting their layers lines up like charges, which repel and crack the crystal.",
+    related: ["ductility", "metallic-bond", "electron-sea", "alloy"],
+  },
+  {
+    id: "hardness",
+    term: "Hardness",
+    category: "Property",
+    definition:
+      "How well a material resists being scratched, dented, or permanently deformed at its surface. Hardness is often compared on the Mohs scale, from talc (1) to diamond (10). Hardness is not the same as toughness: a hard material can still be brittle. Table salt and gold are about equally soft, for example, yet salt shatters and gold bends. In metals, anything that stops layers of atoms from sliding, such as alloying, makes the metal harder.",
+    related: ["brittleness", "malleability", "alloy"],
+  },
+  {
+    id: "brittleness",
+    term: "Brittleness",
+    category: "Property",
+    definition:
+      "The tendency of a material to crack or shatter instead of bending when it is stressed. Brittle materials break with little or no change in shape beforehand. Ionic solids are brittle because shifting their layers lines up like charges, which repel. Very hard materials can also be brittle: diamond and cast iron (iron with 2–4% carbon) are both hard but can crack under a sharp blow. Brittleness is the opposite of malleability and ductility.",
+    related: ["hardness", "malleability", "ductility", "ionic-bond"],
+  },
+  {
+    id: "ductility",
+    term: "Ductility",
+    category: "Property",
+    definition:
+      "The ability of a solid to be stretched into a thin wire without breaking. Like malleability, ductility comes from metallic bonding: metal ions can slide past one another without breaking the bonds holding them together. Copper's ductility, along with its high electrical conductivity, makes it the standard metal for electrical wiring.",
+    related: ["malleability", "metallic-bond", "electrical-conductivity"],
+  },
+  {
+    id: "electrical-conductivity",
+    term: "Electrical Conductivity",
+    category: "Property",
+    definition:
+      "How easily a material allows an electric current (a flow of charged particles) to pass through it. Metals are excellent conductors because their delocalized electrons are already free to move. Silver is the best conductor of any element, followed by copper. Ionic compounds conduct only when melted or dissolved, when their ions are free to move. Most molecular compounds do not conduct at all.",
+    related: ["metallic-bond", "delocalized-electron", "electron-sea", "ion"],
+  },
+  {
+    id: "luster",
+    term: "Luster",
+    category: "Property",
+    definition:
+      "The shiny appearance of a material's surface when it reflects light. Metals have a characteristic metallic luster because their free-moving electrons absorb incoming light and immediately re-emit it, so most of the light bounces back to your eye.",
+    related: ["metallic-bond", "delocalized-electron"],
+  },
+  {
+    id: "alloy",
+    term: "Alloy",
+    category: "Chemical Bonding",
+    definition:
+      "A mixture of a metal with one or more other elements, usually other metals, that keeps metallic properties. Examples include brass (copper and zinc), bronze (copper and tin), and steel (iron with a small amount of carbon). Atoms of a different size disrupt the regular layers of the metal, making it harder for the layers to slide, so alloys are usually harder and stronger than the pure metals they are made from.",
+    related: ["metallic-bond", "malleability"],
   },
 ];
 

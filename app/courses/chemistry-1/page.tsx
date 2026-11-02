@@ -94,6 +94,18 @@ const units = [
         description: "When both atoms want the electrons, nobody wins by taking — they share. Explore how electron sharing creates covalent bonds, and why some bonds are polar while others aren't.",
         href: "/courses/chemistry-1/lessons/covalent-bonding",
       },
+      {
+        id: "3.3",
+        title: "METALLIC BONDING",
+        description: "What if every atom shared its electrons with everyone? Discover the electron sea that holds metals together, and why it makes them conduct, bend, and shine.",
+        href: "/courses/chemistry-1/lessons/metallic-bonding",
+      },
+      {
+        id: "3.4",
+        title: "SIGMA & PI BONDS",
+        description: "Look inside a double bond. See where sigma and pi electrons actually sit, and twist a molecule to find out why double bonds lock in place.",
+        href: "/courses/chemistry-1/lessons/sigma-pi-bonds",
+      },
     ],
   },
 ];

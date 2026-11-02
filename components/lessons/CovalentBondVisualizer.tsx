@@ -26,13 +26,13 @@ const MOL_DATA: Record<Mol, {
     step1Text:
       "The electron density sits exactly between both atoms, belonging equally to both hydrogens. No partial charges develop — this is a perfectly nonpolar covalent bond.",
   },
-  HCl: {
-    label: "HCl", sublabel: "Hydrochloric acid",
-    bondType: "SINGLE BOND", polarity: "POLAR", polarityColor: "#a855f7", deltaEN: "0.9",
+  H2O: {
+    label: "H₂O", sublabel: "Water",
+    bondType: "2 SINGLE BONDS", polarity: "POLAR", polarityColor: "#a855f7", deltaEN: "1.24",
     step0Text:
-      "Hydrogen has 1 valence electron; chlorine has 7. Both are short of a full shell, so they share. But chlorine's electronegativity (3.16) far exceeds hydrogen's (2.20). Drag to explore.",
+      "Oxygen has 6 valence electrons and needs 2 more; each hydrogen has 1 and needs 1 more. So oxygen shares one pair with each hydrogen. Oxygen's electronegativity (3.44) is much higher than hydrogen's (2.20). Drag to explore.",
     step1Text:
-      "The electron density cloud is shifted toward chlorine. The shared electrons spend more time near Cl (δ⁻), leaving H with a partial positive charge (δ⁺). This is a polar covalent bond.",
+      "Both O–H bonding clouds are pulled toward oxygen, and oxygen's two lone pairs add even more density on its side. Oxygen ends up δ⁻ and each hydrogen δ⁺. These are polar covalent bonds, and because the molecule is bent, water as a whole is polar.",
   },
   O2: {
     label: "O₂", sublabel: "Oxygen gas",
@@ -80,54 +80,58 @@ function H2Lewis() {
   );
 }
 
-function HClLewis() {
-  const CLX = 210, CLY = 62;
+function H2OLewis() {
+  const OX = 170, OY = 62;
+  const LHX = 110, RHX = 230, HY = 112;
   return (
-    <svg viewBox="0 0 340 140" width="100%" style={{ maxWidth: "420px" }}>
-      {/* H */}
-      <text x={70} y={68} textAnchor="middle" dominantBaseline="central"
+    <svg viewBox="0 0 340 175" width="100%" style={{ maxWidth: "420px" }}>
+      {/* O circle (faint) */}
+      <circle cx={OX} cy={OY} r={32} fill="rgba(255,102,85,0.07)" stroke="rgba(255,102,85,0.22)" strokeWidth="1" />
+      <text x={OX} y={OY} textAnchor="middle" dominantBaseline="central"
+        style={{ fontSize: "22px", fill: "#ff6655", fontFamily: "monospace", fontWeight: 700 }}>O</text>
+
+      {/* 2 lone pairs on O — upper-left and upper-right */}
+      <circle cx={OX - 23} cy={OY - 31} r={LONE_R} fill="rgba(200,200,200,0.7)" />
+      <circle cx={OX - 31} cy={OY - 23} r={LONE_R} fill="rgba(200,200,200,0.7)" />
+      <circle cx={OX + 23} cy={OY - 31} r={LONE_R} fill="rgba(200,200,200,0.7)" />
+      <circle cx={OX + 31} cy={OY - 23} r={LONE_R} fill="rgba(200,200,200,0.7)" />
+
+      {/* Bond pairs — one along each O–H bond */}
+      <circle cx={135} cy={90} r={DOT_R} fill="#ffd700" />
+      <circle cx={144} cy={82} r={DOT_R} fill="#ffd700" />
+      <circle cx={205} cy={90} r={DOT_R} fill="#ffd700" />
+      <circle cx={196} cy={82} r={DOT_R} fill="#ffd700" />
+
+      {/* H atoms */}
+      <text x={LHX} y={HY} textAnchor="middle" dominantBaseline="central"
+        style={{ fontSize: "26px", fill: "#c0c0c0", fontFamily: "monospace", fontWeight: 700 }}>H</text>
+      <text x={RHX} y={HY} textAnchor="middle" dominantBaseline="central"
         style={{ fontSize: "26px", fill: "#c0c0c0", fontFamily: "monospace", fontWeight: 700 }}>H</text>
 
-      {/* Bond pair */}
-      <circle cx={120} cy={62} r={DOT_R} fill="#ffd700" />
-      <circle cx={132} cy={62} r={DOT_R} fill="#ffd700" />
-
-      {/* Cl circle (faint) */}
-      <circle cx={CLX} cy={CLY} r={34} fill="rgba(102,187,102,0.07)" stroke="rgba(102,187,102,0.25)" strokeWidth="1" />
-      <text x={CLX} y={CLY} textAnchor="middle" dominantBaseline="central"
-        style={{ fontSize: "24px", fill: "#66bb66", fontFamily: "monospace", fontWeight: 700 }}>Cl</text>
-
-      {/* 3 lone pairs on Cl */}
-      {/* top */}
-      <circle cx={CLX - 6} cy={CLY - 38} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      <circle cx={CLX + 6} cy={CLY - 38} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      {/* right */}
-      <circle cx={CLX + 38} cy={CLY - 5} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      <circle cx={CLX + 38} cy={CLY + 5} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      {/* bottom */}
-      <circle cx={CLX - 6} cy={CLY + 38} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      <circle cx={CLX + 6} cy={CLY + 38} r={LONE_R} fill="rgba(200,200,200,0.7)" />
-
       {/* δ labels */}
-      <text x={70} y={36} textAnchor="middle"
-        style={{ fontSize: "11px", fill: "#60a5fa", fontFamily: "monospace", fontWeight: 600 }}>δ⁺</text>
-      <text x={CLX} y={20} textAnchor="middle"
+      <text x={OX} y={14} textAnchor="middle"
         style={{ fontSize: "11px", fill: "#a855f7", fontFamily: "monospace", fontWeight: 600 }}>δ⁻</text>
-
-      {/* Label */}
-      <text x={165} y={120} textAnchor="middle"
-        style={{ fontSize: "10px", fill: "rgba(168,85,247,0.7)", letterSpacing: "0.08em", fontFamily: "monospace" }}>
-        H:Cl — POLAR · ΔEN = 0.9
-      </text>
+      <text x={LHX - 26} y={HY + 4} textAnchor="middle"
+        style={{ fontSize: "11px", fill: "#60a5fa", fontFamily: "monospace", fontWeight: 600 }}>δ⁺</text>
+      <text x={RHX + 26} y={HY + 4} textAnchor="middle"
+        style={{ fontSize: "11px", fill: "#60a5fa", fontFamily: "monospace", fontWeight: 600 }}>δ⁺</text>
 
       {/* Lone pair note */}
-      <text x={CLX + 62} y={62} textAnchor="start"
+      <text x={OX + 44} y={OY - 30} textAnchor="start"
         style={{ fontSize: "7.5px", fill: "rgba(200,200,200,0.4)", fontFamily: "monospace" }}>
-        3 LONE
+        2 LONE PAIRS
       </text>
-      <text x={CLX + 62} y={72} textAnchor="start"
-        style={{ fontSize: "7.5px", fill: "rgba(200,200,200,0.4)", fontFamily: "monospace" }}>
-        PAIRS
+
+      {/* Bond angle note */}
+      <text x={OX} y={HY + 4} textAnchor="middle"
+        style={{ fontSize: "8px", fill: "rgba(255,215,0,0.55)", fontFamily: "monospace" }}>
+        104.5°
+      </text>
+
+      {/* Label */}
+      <text x={OX} y={158} textAnchor="middle"
+        style={{ fontSize: "10px", fill: "rgba(168,85,247,0.7)", letterSpacing: "0.08em", fontFamily: "monospace" }}>
+        H:O:H — POLAR · ΔEN = 1.24
       </text>
     </svg>
   );
@@ -143,8 +147,8 @@ function O2Lewis() {
         style={{ fontSize: "22px", fill: "#ff6655", fontFamily: "monospace", fontWeight: 700 }}>O</text>
 
       {/* Left O — 2 lone pairs (top + left) */}
-      <circle cx={LOX - 6} cy={LOX - 34}  r={LONE_R} fill="rgba(200,200,200,0.7)" />
-      <circle cx={LOX + 6} cy={LOX - 34}  r={LONE_R} fill="rgba(200,200,200,0.7)" />
+      <circle cx={LOX - 6} cy={OY - 36} r={LONE_R} fill="rgba(200,200,200,0.7)" />
+      <circle cx={LOX + 6} cy={OY - 36} r={LONE_R} fill="rgba(200,200,200,0.7)" />
       <circle cx={LOX - 38} cy={OY - 5} r={LONE_R} fill="rgba(200,200,200,0.7)" />
       <circle cx={LOX - 38} cy={OY + 5} r={LONE_R} fill="rgba(200,200,200,0.7)" />
 
@@ -201,7 +205,7 @@ function LewisView({ mol }: { mol: Mol }) {
 
       <div className="mb-6">
         {mol === "H2"  && <H2Lewis  />}
-        {mol === "HCl" && <HClLewis />}
+        {mol === "H2O" && <H2OLewis />}
         {mol === "O2"  && <O2Lewis  />}
       </div>
 
@@ -217,18 +221,18 @@ function LewisView({ mol }: { mol: Mol }) {
             </div>
           </>
         )}
-        {mol === "HCl" && (
+        {mol === "H2O" && (
           <>
             <div className="flex items-start gap-3 p-3" style={{ border: "1px solid rgba(255,215,0,0.2)", background: "rgba(255,215,0,0.04)", borderRadius: "4px" }}>
               <span className="font-heading shrink-0" style={{ fontSize: "0.65rem", color: "#ffd700", letterSpacing: "0.1em" }}>:</span>
               <p className="text-sm leading-relaxed" style={{ color: "var(--oc-text-muted)" }}>
-                The two yellow dots between H and Cl are the shared bond pair. The gray dots around Cl are its 3 lone pairs — 6 electrons that chlorine keeps to itself.
+                Each pair of yellow dots is one O–H bond pair, so water has two single bonds. The gray dots are oxygen&apos;s 2 lone pairs. Check: 4 bond pair electrons + 4 lone pair electrons = 8 around oxygen, a full octet. ✓
               </p>
             </div>
             <div className="flex items-start gap-3 p-3" style={{ border: "1px solid rgba(168,85,247,0.2)", background: "rgba(168,85,247,0.04)", borderRadius: "4px" }}>
               <span className="font-heading shrink-0" style={{ fontSize: "0.65rem", color: "#a855f7", letterSpacing: "0.1em" }}>δ⁺/δ⁻</span>
               <p className="text-sm leading-relaxed" style={{ color: "var(--oc-text-muted)" }}>
-                The partial charges (δ⁺ on H, δ⁻ on Cl) don&apos;t appear in the Lewis structure itself — they&apos;re a consequence of the unequal sharing that the 3D cloud showed you.
+                The partial charges (δ⁻ on O, δ⁺ on each H) don&apos;t appear in the Lewis structure itself — they&apos;re a consequence of the unequal sharing that the 3D cloud showed you.
               </p>
             </div>
           </>
@@ -244,7 +248,7 @@ function LewisView({ mol }: { mol: Mol }) {
             <div className="flex items-start gap-3 p-3" style={{ border: "1px solid rgba(96,165,250,0.2)", background: "rgba(96,165,250,0.04)", borderRadius: "4px" }}>
               <span className="font-heading shrink-0" style={{ fontSize: "0.65rem", color: "#60a5fa", letterSpacing: "0.1em" }}>LP</span>
               <p className="text-sm leading-relaxed" style={{ color: "var(--oc-text-muted)" }}>
-                Each oxygen keeps 2 lone pairs (4 electrons). Total: 4 bond pair electrons + 8 lone pair electrons = 12 valence electrons. Check: 2 oxygens × 6 valence electrons = 12. ✓
+                Each oxygen keeps 2 lone pairs (4 electrons) and shares all 4 electrons of the double bond. Count around either oxygen: 4 lone pair electrons + 4 bond pair electrons = 8, a full octet. ✓ The shared electrons count for both atoms, which is how two oxygens with only 12 valence electrons between them can each reach 8.
               </p>
             </div>
           </>
@@ -290,7 +294,7 @@ export function CovalentBondVisualizer() {
       <div>
         {/* Molecule tabs */}
         <div className="flex gap-2 mb-5">
-          {(["H2", "HCl", "O2"] as Mol[]).map(m => (
+          {(["H2", "H2O", "O2"] as Mol[]).map(m => (
             <button key={m} onClick={() => selectMol(m)}
               className="font-heading text-xs px-4 py-2 transition-all duration-200"
               style={{
@@ -327,7 +331,7 @@ export function CovalentBondVisualizer() {
     <div>
       {/* Molecule tabs */}
       <div className="flex gap-2 mb-5 flex-wrap">
-        {(["H2", "HCl", "O2"] as Mol[]).map(m => (
+        {(["H2", "H2O", "O2"] as Mol[]).map(m => (
           <button key={m} onClick={() => selectMol(m)}
             className="font-heading text-xs px-4 py-2 transition-all duration-200"
             style={{
@@ -350,13 +354,13 @@ export function CovalentBondVisualizer() {
       <div className="flex items-center gap-5 mb-2 font-heading flex-wrap"
         style={{ color: "var(--oc-text-dim)", letterSpacing: "0.1em", fontSize: "0.7rem" }}>
         <span>
-          <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: "#c0c0c0", marginRight: 5, verticalAlign: "middle" }} />
-          {mol === "H2" ? "H — HYDROGEN" : mol === "HCl" ? "H — HYDROGEN" : "O — OXYGEN"}
+          <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: mol === "O2" ? "#ff6655" : "#c0c0c0", marginRight: 5, verticalAlign: "middle" }} />
+          {mol === "O2" ? "O — OXYGEN" : "H — HYDROGEN"}
         </span>
-        {mol === "HCl" && (
+        {mol === "H2O" && (
           <span>
-            <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", background: "#66bb66", marginRight: 5, verticalAlign: "middle" }} />
-            Cl — CHLORINE
+            <span style={{ display: "inline-block", width: 11, height: 11, borderRadius: "50%", background: "#ff6655", marginRight: 5, verticalAlign: "middle" }} />
+            O — OXYGEN
           </span>
         )}
         {showDensity && (

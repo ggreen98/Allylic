@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 
-export type Mol = "H2" | "HCl" | "O2";
+export type Mol = "H2" | "H2O" | "O2";
 
 // Box-Muller Gaussian sample
 function gaussian() {
@@ -20,45 +20,67 @@ function gaussian() {
 interface CloudDef {
   cx: number; cy: number; cz: number;
   sigmaX: number; sigmaY: number;
+  rotZ?: number;            // radians — orients sigmaX along a bond axis
   count: number;
   color: string;
   maxOpacity: number;
 }
 
-interface MolDef {
-  leftPos:    [number, number, number];
-  leftR:      number;
-  leftColor:  string;
-  leftLabel:  string;
-  rightPos:   [number, number, number];
-  rightR:     number;
-  rightColor: string;
-  rightLabel: string;
-  clouds:     CloudDef[];
-  polarity:   "NONPOLAR" | "POLAR";
-  bondType:   string;
+interface AtomDef {
+  pos:    [number, number, number];
+  r:      number;
+  color:  string;
+  label:  string;
+  delta?: { sign: "δ⁺" | "δ⁻"; offset: [number, number, number] };
 }
+
+interface MolDef {
+  atoms:    AtomDef[];
+  clouds:   CloudDef[];
+  polarity: "NONPOLAR" | "POLAR";
+  bondType: string;
+}
+
+// H₂O geometry: 104.5° H–O–H angle, O sits above the two H atoms
+const OH_LEN    = 2.0;
+const HALF_ANG  = (104.5 / 2) * (Math.PI / 180);
+const O_Y       = 0.55;
+const H_X       = OH_LEN * Math.sin(HALF_ANG);
+const H_Y       = O_Y - OH_LEN * Math.cos(HALF_ANG);
+const OH_ROT    = Math.atan2(O_Y - H_Y, H_X);  // bond-axis tilt from horizontal
+const OH_SHIFT  = 0.38;                        // cloud centre as fraction of O→H, i.e. pulled toward O
 
 const MOLS: Record<Mol, MolDef> = {
   H2: {
-    leftPos:    [-1.55, 0, 0], leftR:  0.50, leftColor:  "#c0c0c0", leftLabel:  "H",
-    rightPos:   [ 1.55, 0, 0], rightR: 0.50, rightColor: "#c0c0c0", rightLabel: "H",
+    atoms: [
+      { pos: [-1.55, 0, 0], r: 0.50, color: "#c0c0c0", label: "H" },
+      { pos: [ 1.55, 0, 0], r: 0.50, color: "#c0c0c0", label: "H" },
+    ],
     clouds: [
       { cx: 0, cy: 0, cz: 0, sigmaX: 0.88, sigmaY: 0.52, count: 400, color: "#34d399", maxOpacity: 0.060 },
     ],
     polarity: "NONPOLAR", bondType: "SINGLE BOND",
   },
-  HCl: {
-    leftPos:    [-2.10, 0, 0], leftR:  0.46, leftColor:  "#c0c0c0", leftLabel:  "H",
-    rightPos:   [ 1.85, 0, 0], rightR: 0.82, rightColor: "#66bb66", rightLabel: "Cl",
-    clouds: [
-      { cx: 0.38, cy: 0, cz: 0, sigmaX: 0.80, sigmaY: 0.48, count: 400, color: "#a855f7", maxOpacity: 0.068 },
+  H2O: {
+    atoms: [
+      { pos: [0, O_Y, 0],     r: 0.65, color: "#ff6655", label: "O", delta: { sign: "δ⁻", offset: [0, 1.45, 0] } },
+      { pos: [-H_X, H_Y, 0],  r: 0.46, color: "#c0c0c0", label: "H", delta: { sign: "δ⁺", offset: [-0.55, -0.6, 0] } },
+      { pos: [ H_X, H_Y, 0],  r: 0.46, color: "#c0c0c0", label: "H", delta: { sign: "δ⁺", offset: [ 0.55, -0.6, 0] } },
     ],
-    polarity: "POLAR", bondType: "SINGLE BOND",
+    clouds: [
+      // two O–H bonds, each shifted toward oxygen
+      { cx: -H_X * OH_SHIFT, cy: O_Y + (H_Y - O_Y) * OH_SHIFT, cz: 0, sigmaX: 0.70, sigmaY: 0.40, rotZ:  OH_ROT, count: 300, color: "#a855f7", maxOpacity: 0.068 },
+      { cx:  H_X * OH_SHIFT, cy: O_Y + (H_Y - O_Y) * OH_SHIFT, cz: 0, sigmaX: 0.70, sigmaY: 0.40, rotZ: -OH_ROT, count: 300, color: "#a855f7", maxOpacity: 0.068 },
+      // oxygen's two lone pairs — extra negative density on the far side of O
+      { cx: 0, cy: O_Y + 0.75, cz: 0, sigmaX: 0.55, sigmaY: 0.38, count: 220, color: "#a855f7", maxOpacity: 0.050 },
+    ],
+    polarity: "POLAR", bondType: "2 SINGLE BONDS",
   },
   O2: {
-    leftPos:    [-1.64, 0, 0], leftR:  0.65, leftColor:  "#ff6655", leftLabel:  "O",
-    rightPos:   [ 1.64, 0, 0], rightR: 0.65, rightColor: "#ff6655", rightLabel: "O",
+    atoms: [
+      { pos: [-1.64, 0, 0], r: 0.65, color: "#ff6655", label: "O" },
+      { pos: [ 1.64, 0, 0], r: 0.65, color: "#ff6655", label: "O" },
+    ],
     clouds: [
       // sigma bond — along the internuclear axis
       { cx: 0, cy: 0,     cz: 0, sigmaX: 0.84, sigmaY: 0.36, count: 280, color: "#60a5fa", maxOpacity: 0.062 },
@@ -79,10 +101,14 @@ function ElectronDensityCloud({ cfg, visible }: { cfg: CloudDef; visible: boolea
   const matrices = useMemo(() => {
     const dummy = new THREE.Object3D();
     const result: THREE.Matrix4[] = [];
+    const cos = Math.cos(cfg.rotZ ?? 0);
+    const sin = Math.sin(cfg.rotZ ?? 0);
     for (let i = 0; i < cfg.count; i++) {
+      const lx = gaussian() * cfg.sigmaX;
+      const ly = gaussian() * cfg.sigmaY;
       dummy.position.set(
-        cfg.cx + gaussian() * cfg.sigmaX,
-        cfg.cy + gaussian() * cfg.sigmaY,
+        cfg.cx + lx * cos - ly * sin,
+        cfg.cy + lx * sin + ly * cos,
         cfg.cz + gaussian() * cfg.sigmaY,
       );
       dummy.scale.setScalar(1);
@@ -90,7 +116,7 @@ function ElectronDensityCloud({ cfg, visible }: { cfg: CloudDef; visible: boolea
       result.push(dummy.matrix.clone());
     }
     return result;
-  }, [cfg.cx, cfg.cy, cfg.cz, cfg.sigmaX, cfg.sigmaY, cfg.count]);
+  }, [cfg.cx, cfg.cy, cfg.cz, cfg.sigmaX, cfg.sigmaY, cfg.rotZ, cfg.count]);
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -115,7 +141,7 @@ function ElectronDensityCloud({ cfg, visible }: { cfg: CloudDef; visible: boolea
 
 // ── Scene ─────────────────────────────────────────────────────────────────────
 
-function Scene({ mol, showDensity }: { mol: Mol; showDensity: boolean }) {
+function Scene({ mol, showDensity, caption }: { mol: Mol; showDensity: boolean; caption?: string }) {
   const data = MOLS[mol];
 
   const labelStyle: React.CSSProperties = {
@@ -150,45 +176,35 @@ function Scene({ mol, showDensity }: { mol: Mol; showDensity: boolean }) {
       <pointLight position={[6, 6, 6]} intensity={1.4} />
       <pointLight position={[-5, 4, -4]} intensity={0.6} color="#8899ff" />
 
-      {/* Left atom */}
-      <mesh position={data.leftPos}>
-        <sphereGeometry args={[data.leftR, 52, 52]} />
-        <meshStandardMaterial color={data.leftColor} roughness={0.42} metalness={0.06} />
-      </mesh>
-      <Html position={data.leftPos} center distanceFactor={8} style={{ pointerEvents: "none" }}>
-        <div style={labelStyle}>{data.leftLabel}</div>
-      </Html>
+      {/* Atoms */}
+      {data.atoms.map((atom, i) => (
+        <group key={`${mol}-atom-${i}`}>
+          <mesh position={atom.pos}>
+            <sphereGeometry args={[atom.r, 52, 52]} />
+            <meshStandardMaterial color={atom.color} roughness={0.42} metalness={0.06} />
+          </mesh>
+          <Html position={atom.pos} center distanceFactor={8} style={{ pointerEvents: "none" }}>
+            <div style={labelStyle}>{atom.label}</div>
+          </Html>
 
-      {/* δ⁺ label on H when polar and density shown */}
-      {mol === "HCl" && showDensity && (
-        <Html
-          position={[data.leftPos[0], data.leftR + 0.7, 0]}
-          center distanceFactor={8}
-          style={{ pointerEvents: "none" }}
-        >
-          <div style={{ ...noteStyle, color: "#60a5fa", fontSize: "9px" }}>δ⁺</div>
-        </Html>
-      )}
-
-      {/* Right atom */}
-      <mesh position={data.rightPos}>
-        <sphereGeometry args={[data.rightR, 52, 52]} />
-        <meshStandardMaterial color={data.rightColor} roughness={0.42} metalness={0.06} />
-      </mesh>
-      <Html position={data.rightPos} center distanceFactor={8} style={{ pointerEvents: "none" }}>
-        <div style={labelStyle}>{data.rightLabel}</div>
-      </Html>
-
-      {/* δ⁻ label on Cl when polar and density shown */}
-      {mol === "HCl" && showDensity && (
-        <Html
-          position={[data.rightPos[0], data.rightR + 0.7, 0]}
-          center distanceFactor={8}
-          style={{ pointerEvents: "none" }}
-        >
-          <div style={{ ...noteStyle, color: "#a855f7", fontSize: "9px" }}>δ⁻</div>
-        </Html>
-      )}
+          {/* Partial charge label when polar and density shown */}
+          {atom.delta && showDensity && (
+            <Html
+              position={[
+                atom.pos[0] + atom.delta.offset[0],
+                atom.pos[1] + atom.delta.offset[1],
+                atom.pos[2] + atom.delta.offset[2],
+              ]}
+              center distanceFactor={8}
+              style={{ pointerEvents: "none" }}
+            >
+              <div style={{ ...noteStyle, color: atom.delta.sign === "δ⁺" ? "#60a5fa" : "#a855f7", fontSize: "9px" }}>
+                {atom.delta.sign}
+              </div>
+            </Html>
+          )}
+        </group>
+      ))}
 
       {/* Electron density clouds — keyed on mol so they remount on molecule switch */}
       {data.clouds.map((cfg, i) => (
@@ -199,7 +215,7 @@ function Scene({ mol, showDensity }: { mol: Mol; showDensity: boolean }) {
       {showDensity && (
         <Html position={[0, -2.4, 0]} center distanceFactor={8} style={{ pointerEvents: "none" }}>
           <div style={{ ...noteStyle, color: densityLabelColor }}>
-            {data.bondType} · {data.polarity}
+            {caption ?? `${data.bondType} · ${data.polarity}`}
           </div>
         </Html>
       )}
@@ -219,9 +235,11 @@ function Scene({ mol, showDensity }: { mol: Mol; showDensity: boolean }) {
 export default function CovalentBond3D({
   mol,
   showDensity,
+  caption,
 }: {
   mol: Mol;
   showDensity: boolean;
+  caption?: string;         // overrides the default "BOND TYPE · POLARITY" annotation
 }) {
   return (
     <Canvas
@@ -229,7 +247,7 @@ export default function CovalentBond3D({
       style={{ height: "320px", width: "100%" }}
       gl={{ antialias: true, alpha: true }}
     >
-      <Scene mol={mol} showDensity={showDensity} />
+      <Scene mol={mol} showDensity={showDensity} caption={caption} />
     </Canvas>
   );
 }

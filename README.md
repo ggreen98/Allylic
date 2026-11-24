@@ -1,13 +1,21 @@
 # Allylic
 
-An interactive chemistry education platform with 3D molecule visualization — built for the web, designed to become a mobile app.
+An interactive chemistry learning site with 3D molecule and orbital visualizations, built for the web and designed to become a mobile app.
 
-## Features (Planned)
-- Interactive 3D molecule viewer
-- Guided chemistry lessons (atomic structure, bonding, reactions, and more)
-- User accounts with progress tracking
-- Quizzes and learning checkpoints
-- Mobile app (Expo/React Native)
+**Live site:** [allylic.org](https://allylic.org)
+
+## What's live
+
+- **Chemistry 1 course:** 12 lessons from atomic structure through electron configuration, periodic trends, and ionic, covalent, and metallic bonding, with unit quizzes
+- **Interactive visualizations:** 3D bonding models, electrostatic potential maps, an orbital shape viewer, and electron configuration explorers
+- **Reference tools:** an interactive periodic table, a chemistry dictionary, and an SI units guide
+- **Practice:** mini-games, Lewis dot practice, and achievements
+
+## Roadmap
+
+- More courses and lessons (reactions and beyond)
+- User accounts with saved progress
+- Mobile app (Expo + React Native)
 
 ## Tech Stack
 
@@ -36,7 +44,7 @@ An interactive chemistry education platform with 3D molecule visualization — b
 
 ```bash
 # Clone the repo
-git clone https://github.com/ggreen98/allylic.git
+git clone https://github.com/ggreen98/Allylic.git
 cd allylic
 
 # Install dependencies
